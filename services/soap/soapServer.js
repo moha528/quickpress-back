@@ -1,7 +1,8 @@
 const express = require('express');
 const xml2js = require('xml2js');
 const { User, SoapToken } = require('../../models');
-const { generateToken } = require('../../config/jwt');
+const { generateToken, JWT_SECRET, JWT_EXPIRES_IN } = require('../../config/jwt');
+const jwt = require('jsonwebtoken');
 
 // WSDL pour le service SOAP
 const wsdl = `<?xml version="1.0" encoding="UTF-8"?>
@@ -124,7 +125,7 @@ const wsdl = `<?xml version="1.0" encoding="UTF-8"?>
 
   <service name="QuickPressService">
     <port name="QuickPressPort" binding="tns:QuickPressBinding">
-      <soap:address location="http://localhost:3000/soap"/>
+      <soap:address location="http://localhost:8000/soap"/>
     </port>
   </service>
 </definitions>`;
@@ -132,15 +133,9 @@ const wsdl = `<?xml version="1.0" encoding="UTF-8"?>
 // Fonction pour vérifier un token SOAP
 const verifySoapToken = async (token) => {
   try {
-    const soapToken = await SoapToken.findValidToken(token);
-    if (!soapToken) {
-      return null;
-    }
-    
-    // Mettre à jour la date de dernière utilisation
-    await soapToken.updateLastUsed();
-    
-    return soapToken;
+    // Utiliser le système JWT existant
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return decoded;
   } catch (error) {
     console.error('Erreur lors de la vérification du token SOAP:', error);
     return null;
@@ -282,6 +277,7 @@ const handleAuthenticateUser = async (args) => {
     
     // Recherche de l'utilisateur
     const user = await User.findOne({ where: { username } });
+
     if (!user) {
       return {
         success: false,
@@ -290,8 +286,11 @@ const handleAuthenticateUser = async (args) => {
         token: ''
       };
     }
+
+    console.log('User found:', user);
     
     // Vérification du mot de passe
+
     const isValidPassword = await user.comparePassword(password);
     if (!isValidPassword) {
       return {
@@ -301,6 +300,8 @@ const handleAuthenticateUser = async (args) => {
         token: ''
       };
     }
+
+    console.log('Password is valid:', isValidPassword);
     
     // Génération du token JWT
     const token = generateToken({
