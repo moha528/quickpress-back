@@ -1,0 +1,117 @@
+<definitions name="NewsChronicleService"
+    targetNamespace="http://newschronicle.com/soap"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="http://newschronicle.com/soap"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <message name="AuthenticateUserRequest">
+        <part name="username" type="xsd:string" />
+        <part name="password" type="xsd:string" />
+    </message>
+
+    <message name="AuthenticateUserResponse">
+        <part name="role" type="xsd:string" />
+        <part name="token" type="xsd:string" />
+        <part name="success" type="xsd:boolean" />
+        <part name="message" type="xsd:string" />
+    </message>
+
+    <message name="ListUsersRequest">
+        <part name="token" type="xsd:string" />
+    </message>
+
+    <message name="ListUsersResponse">
+        <part name="users" type="xsd:string" />
+        <part name="success" type="xsd:boolean" />
+        <part name="message" type="xsd:string" />
+    </message>
+
+    <message name="AddUserRequest">
+        <part name="token" type="xsd:string" />
+        <part name="username" type="xsd:string" />
+        <part name="password" type="xsd:string" />
+        <part name="role" type="xsd:string" />
+    </message>
+
+    <message name="AddUserResponse">
+        <part name="success" type="xsd:boolean" />
+        <part name="message" type="xsd:string" />
+        <part name="userId" type="xsd:integer" />
+    </message>
+
+    <message name="DeleteUserRequest">
+        <part name="token" type="xsd:string" />
+        <part name="userId" type="xsd:integer" />
+    </message>
+
+    <message name="DeleteUserResponse">
+        <part name="success" type="xsd:boolean" />
+        <part name="message" type="xsd:string" />
+    </message>
+
+    <portType name="NewsChroniclePortType">
+        <operation name="authenticateUser">
+            <input message="tns:AuthenticateUserRequest" />
+            <output message="tns:AuthenticateUserResponse" />
+        </operation>
+        <operation name="listUsers">
+            <input message="tns:ListUsersRequest" />
+            <output message="tns:ListUsersResponse" />
+        </operation>
+        <operation name="addUser">
+            <input message="tns:AddUserRequest" />
+            <output message="tns:AddUserResponse" />
+        </operation>
+        <operation name="deleteUser">
+            <input message="tns:DeleteUserRequest" />
+            <output message="tns:DeleteUserResponse" />
+        </operation>
+    </portType>
+
+    <binding name="NewsChronicleBinding" type="tns:NewsChroniclePortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="authenticateUser">
+            <soap:operation soapAction="authenticateUser" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="listUsers">
+            <soap:operation soapAction="listUsers" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="addUser">
+            <soap:operation soapAction="addUser" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="deleteUser">
+            <soap:operation soapAction="deleteUser" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <service name="NewsChronicleService">
+        <port name="NewsChroniclePort" binding="tns:NewsChronicleBinding">
+            <soap:address location="http://localhost:8000/soap" />
+        </port>
+    </service>
+</definitions>
