@@ -106,7 +106,7 @@ Le token JWT contient :
 
 ### Base URL
 ```
-http://localhost:3000/api
+http://localhost:8000/api
 ```
 
 ### Authentification
@@ -167,7 +167,7 @@ Authorization: Bearer <token>
 
 ### Endpoint
 ```
-http://localhost:3000/soap
+http://localhost:8000/soap
 ```
 
 ### Méthodes disponibles
